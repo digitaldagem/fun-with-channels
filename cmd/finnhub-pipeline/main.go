@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"log"
 
-	"fun-with-channels/src"
 	"fun-with-channels/src/config"
+	"fun-with-channels/src/models"
+	"fun-with-channels/src/pipelines"
+
 	_ "github.com/lib/pq"
 )
 
@@ -27,7 +29,7 @@ func main() {
 	}(db)
 
 	log.Println("Starting pipeline...")
-	src.NewPipeline(configuration).BeginDataPipeline(db)
+	pipelines.NewFinnhubDataPipeline(configuration).BeginFinnhubDataPipeline(db)
 }
 
 func newDB(config *config.Config) (*sql.DB, error) {
@@ -38,13 +40,13 @@ func newDB(config *config.Config) (*sql.DB, error) {
 		panic(err)
 	}
 
-	statement := "CREATE TABLE IF NOT EXISTS finnhub_trade_data (symbol VARCHAR(255), last_price float, time_stamp bigint, volume float);"
+	statement := "CREATE TABLE IF NOT EXISTS " + models.FinnhubTradeDataTable + " (symbol VARCHAR(255), last_price float, time_stamp bigint, volume float);"
 	_, err = db.Exec(statement)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	statement = "CREATE TABLE IF NOT EXISTS finnhub_moving_averages (symbol VARCHAR(255), moving_average float, start_time_stamp bigint, end_time_stamp bigint);"
+	statement = "CREATE TABLE IF NOT EXISTS " + models.FinnhubMovingAverageTable + " (symbol VARCHAR(255), moving_average float, start_time_stamp bigint, end_time_stamp bigint);"
 	_, err = db.Exec(statement)
 	if err != nil {
 		log.Fatal(err)

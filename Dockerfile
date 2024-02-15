@@ -26,4 +26,4 @@ ENV PATH=/app:$PATH
 
 WORKDIR /app
 
-CMD ["fun-with-channels"]
+CMD ["finnhub-pipeline"]
