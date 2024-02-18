@@ -14,7 +14,7 @@ import (
 
 func TestCalculateSimpleMovingAverage(t *testing.T) {
 	// arrange
-	tradeData := []models.FinnhubTradeData{
+	tradeData := []models.TradeData{
 		{42587.16, models.BINANCEBTCUSDT, 1706438557159, 0.00246},
 		{2292.7, models.BINANCEETHUSDT, 1706438557374, 0.1089},
 		{42587.16, models.BINANCEADAUSDT, 1706438557654, 0.02351}}

@@ -15,14 +15,14 @@ import (
 
 type FinnhubDataPipelines struct {
 	Config  *config.Config
-	Channel chan models.FinnhubTradeData
+	Channel chan models.TradeData
 	WSConn  *websocket.Conn
 }
 
 func NewFinnhubDataPipeline(config *config.Config) *FinnhubDataPipelines {
 	return &FinnhubDataPipelines{
 		Config:  config,
-		Channel: make(chan models.FinnhubTradeData),
+		Channel: make(chan models.TradeData),
 		WSConn:  nil,
 	}
 }
@@ -67,7 +67,7 @@ func (p *FinnhubDataPipelines) BeginFinnhubDataPipeline(db *sql.DB) {
 }
 
 func (p *FinnhubDataPipelines) listenForFinnhubStockAPIUpdates() {
-	var finnhubDataWrapper models.FinnhubDataWrapper
+	var finnhubDataWrapper models.TradeDataWrapper
 	log.Printf("receiving live finnhub stock api updates")
 	for {
 
@@ -86,7 +86,7 @@ func (p *FinnhubDataPipelines) listenForFinnhubStockAPIUpdates() {
 }
 
 func processFinnhubTradeData(
-	finnhubTradeDataChannel <-chan models.FinnhubTradeData, db *sql.DB,
+	finnhubTradeDataChannel <-chan models.TradeData, db *sql.DB,
 ) {
 	for finnhubTradeData := range finnhubTradeDataChannel {
 		utilities.InsertTradeData(db, finnhubTradeData, models.FinnhubTradeDataTable)

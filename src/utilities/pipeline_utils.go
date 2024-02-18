@@ -6,7 +6,7 @@ import (
 	"fun-with-channels/src/models"
 )
 
-func CalculateSimpleMovingAverage(finnhubTradeData []models.FinnhubTradeData, symbol string, db *sql.DB, table string) float64 {
+func CalculateSimpleMovingAverage(finnhubTradeData []models.TradeData, symbol string, db *sql.DB, table string) float64 {
 	timestamps := make([]int64, 0)
 	prices := make([]float64, 0)
 	for _, trade := range finnhubTradeData {
@@ -17,7 +17,7 @@ func CalculateSimpleMovingAverage(finnhubTradeData []models.FinnhubTradeData, sy
 	}
 	movingAverage := SumPrices(prices) / float64(len(prices))
 	InsertMovingAverage(db,
-		models.FinnhubMovingAverage{
+		models.MovingAverage{
 			MovingAverage:  movingAverage,
 			Symbol:         symbol,
 			StartTimestamp: FindStartTimeStamp(timestamps),

@@ -7,7 +7,7 @@ import (
 	"fun-with-channels/src/models"
 )
 
-func InsertTradeData(db *sql.DB, trade models.FinnhubTradeData, table string) {
+func InsertTradeData(db *sql.DB, trade models.TradeData, table string) {
 	insertStatement := `INSERT INTO ` + table + ` (symbol, last_price, time_stamp, volume) VALUES ($1, $2, $3, $4)`
 	transaction, err := db.Begin()
 	if err != nil {
@@ -31,8 +31,8 @@ func InsertTradeData(db *sql.DB, trade models.FinnhubTradeData, table string) {
 	}
 }
 
-func SelectTradeDataFromLastMinute(db *sql.DB, table string) ([]models.FinnhubTradeData, error) {
-	tradeData := make([]models.FinnhubTradeData, 0)
+func SelectTradeDataFromLastMinute(db *sql.DB, table string) ([]models.TradeData, error) {
+	tradeData := make([]models.TradeData, 0)
 	selectStatement := `SELECT * FROM ` + table + ` WHERE to_timestamp(time_stamp / 1000) >= now() - INTERVAL '1 MINUTE';`
 	transaction, err := db.Begin()
 	if err != nil {
@@ -55,7 +55,7 @@ func SelectTradeDataFromLastMinute(db *sql.DB, table string) ([]models.FinnhubTr
 		log.Println("error running select query for "+table+" table", err)
 	}
 	for rows.Next() {
-		var trade models.FinnhubTradeData
+		var trade models.TradeData
 		err = rows.Scan(&trade.Symbol, &trade.LastPrice, &trade.Timestamp, &trade.Volume)
 		if err != nil {
 			log.Println("error scanning row from select query for "+table+" table", err)
@@ -65,7 +65,7 @@ func SelectTradeDataFromLastMinute(db *sql.DB, table string) ([]models.FinnhubTr
 	return tradeData, nil
 }
 
-func InsertMovingAverage(db *sql.DB, movingAverage models.FinnhubMovingAverage, table string) {
+func InsertMovingAverage(db *sql.DB, movingAverage models.MovingAverage, table string) {
 	insertStatement := `INSERT INTO ` + table + ` (symbol, moving_average, start_time_stamp, end_time_stamp) VALUES ($1, $2, $3, $4)`
 	transaction, err := db.Begin()
 	if err != nil {
